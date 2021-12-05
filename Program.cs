@@ -38,9 +38,7 @@ namespace Clidget.Core
                 {
                     Console.Write("Name > ");
                     string name = Console.ReadLine();
-                    
-                    Console.WriteLine();
-                    
+
                     Console.Write("Account Type (Checking, Savings, Wroth, Retirement, Investment) > ");
                     string accntTypeToSet = Console.ReadLine();
 
