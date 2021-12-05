@@ -125,6 +125,31 @@ namespace Clidget.Core
         public static void AccountManager(Account account)
         {
             Console.WriteLine($"{account.Name}, {account.Balance}, {account.Type.ToString()}");
+            
+            bool selected = true;
+
+            while (selected is true)
+            {
+                Console.Write($"{account.Name} > ");
+                string input = Console.ReadLine();
+
+                if (input == "transaction")
+                {
+                    Transaction ToEdit = TransactionFactory();
+                    
+                    account.ImportHistory();
+                    
+                    account.AddToHistory(ToEdit);
+                }
+
+                if (input == "history")
+                {
+                    foreach (Transaction transaction in account.History)
+                    {
+                        Console.WriteLine($"{transaction.Type} {transaction.Amount.ToString()} {transaction.Date}");
+                    }
+                }
+            }
         }
 
         public static Transaction TransactionFactory()
@@ -139,7 +164,7 @@ namespace Clidget.Core
             
             Console.Write("Enter a date > ");
             DateTime date = DateTime.Parse(Console.ReadLine());
-
+            
             Transaction ret = new Transaction(type, amnt, date);
 
             return ret;

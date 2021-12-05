@@ -11,7 +11,7 @@ namespace Clidget.Core.Types
         public string Name { get; set; }
         public AccountType Type { get; set; }
         public string Balance { get; set; }
-        public List<Transaction> History { get; set; }
+        public List<Transaction>? History { get; set; }
 
         public Account(string name, AccountType type, string balance)
         {
@@ -20,6 +20,7 @@ namespace Clidget.Core.Types
             this.Name = name;
             this.Type = type;
             this.Balance = balance;
+            this.History = new List<Transaction>();
         }
 
         public static List<Account> ImportAccounts()
@@ -36,9 +37,12 @@ namespace Clidget.Core.Types
             {
                 foreach (FileInfo file in dir.GetFiles())
                 {
-                    if (!AccountList.Contains(JsonConvert.DeserializeObject<Account>(File.ReadAllText(file.FullName))))
+                    if (file.FullName.EndsWith(".json"))
                     {
-                        AccountList.Add(JsonConvert.DeserializeObject<Account>(File.ReadAllText(file.FullName)));
+                        if (!AccountList.Contains(JsonConvert.DeserializeObject<Account>(File.ReadAllText(file.FullName))) && File.Exists(file.FullName))
+                        {
+                            AccountList.Add(JsonConvert.DeserializeObject<Account>(File.ReadAllText(file.FullName)));
+                        }
                     }
                 }
             }
@@ -55,6 +59,9 @@ namespace Clidget.Core.Types
             FileStream fs = File.Create(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"));
             fs.Close();
             File.WriteAllText(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"), toWrite);
+            
+            FileStream fs2= File.Create(Path.Join(dat.AccountDirectory, account.Name, "history.txt"));
+            fs2.Close();
         }
 
         public void EditBalance(string balance)
@@ -83,7 +90,7 @@ namespace Clidget.Core.Types
             
             return ret;
         }
-        public void EditHistory(Transaction transaction)
+        public void AddToHistory(Transaction transaction)
         {
             ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
             this.History = ImportHistory();
@@ -92,8 +99,10 @@ namespace Clidget.Core.Types
             if (transaction != null)
             {
                 string towrite = JsonConvert.SerializeObject(transaction);
-                File.WriteAllText(path, towrite);
+                File.AppendAllText(path, towrite + Environment.NewLine);
             }
+
+            this.History = ImportHistory();
         }
     }
 }
