@@ -64,15 +64,29 @@ namespace Clidget.Core.Types
             fs2.Close();
         }
 
-        public void EditBalance(string balance)
+        public void EditBalance(Transaction transaction)
         {
             ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
             
             File.Delete(Path.Join(dat.AccountDirectory, this.Name, this.Name + ".json"));
 
-            this.Balance = balance;
+            if (transaction.Type == TransactionType.Addition)
+            {
+                int newbal = Convert.ToInt32(this.Balance) + transaction.Amount;
+            
+                this.Balance = newbal.ToString();
+            
+                CreateAccount(this);
+            }
 
-            CreateAccount(this);
+            if (transaction.Type == TransactionType.Subtraction)
+            {
+                int newbal = Convert.ToInt32(this.Balance) - transaction.Amount;
+            
+                this.Balance = newbal.ToString();
+            
+                CreateAccount(this);
+            }
         }
 
         public List<Transaction> ImportHistory()
