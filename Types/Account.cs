@@ -11,14 +11,15 @@ namespace Clidget.Core.Types
         public string Name { get; set; }
         public AccountType Type { get; set; }
         public string Balance { get; set; }
-        public string[]? History { get; set; }
+        public List<Transaction> History { get; set; }
 
-        public Account(string name, AccountType type, string balance, string[]? history)
+        public Account(string name, AccountType type, string balance)
         {
+            ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
+            
             this.Name = name;
             this.Type = type;
             this.Balance = balance;
-            this.History = history;
         }
 
         public static List<Account> ImportAccounts()
@@ -56,16 +57,43 @@ namespace Clidget.Core.Types
             File.WriteAllText(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"), toWrite);
         }
 
-        public void EditAccount(string balance, string[]? history)
+        public void EditBalance(string balance)
         {
             ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
             
             File.Delete(Path.Join(dat.AccountDirectory, this.Name, this.Name + ".json"));
 
             this.Balance = balance;
-            this.History = history;
-            
+
             CreateAccount(this);
+        }
+
+        public List<Transaction> ImportHistory()
+        {
+            ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
+            string path = Path.Join(dat.AccountDirectory, this.Name, "history.txt");
+
+            List<Transaction> ret = new();
+            
+            foreach (string val in File.ReadLines(path))
+            {
+                Transaction x = JsonConvert.DeserializeObject<Transaction>(val);
+                ret.Add(x);
+            }
+            
+            return ret;
+        }
+        public void EditHistory(Transaction transaction)
+        {
+            ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
+            this.History = ImportHistory();
+            string path = Path.Join(dat.AccountDirectory, this.Name, "history.txt");
+            
+            if (transaction != null)
+            {
+                string towrite = JsonConvert.SerializeObject(transaction);
+                File.WriteAllText(path, towrite);
+            }
         }
     }
 }

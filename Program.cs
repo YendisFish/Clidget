@@ -16,6 +16,11 @@ namespace Clidget.Core
             StartupChecks();
             List<Account> Accounts = Account.ImportAccounts();
 
+            foreach (Account val in Accounts)
+            {
+                val.History = val.ImportHistory();
+            }
+            
             while (true)
             {
                 Console.Write("Type help for a list of commands > ");
@@ -61,12 +66,43 @@ namespace Clidget.Core
                         Console.WriteLine("Failed to create account, please enter a valid balance!");
                         continue;
                     }
-                    
-                    string[]? history = {"none"};
-                    
-                    Account accntToCreate = new Account(name, type, balance, history);
+
+                    Account accntToCreate = new Account(name, type, balance);
                     Account.CreateAccount(accntToCreate);
                     Accounts.Add(accntToCreate);
+                }
+
+                if (UserData == "select")
+                {
+                    Console.Write("Enter the name of the account you want to select > ");
+                    string accntSelected = Console.ReadLine();
+                    
+                    foreach (Account val in Accounts)
+                    {
+                        if (val.Name == accntSelected)
+                        {
+                            AccountManager(val);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Accounts = Account.ImportAccounts();
+                                if (!Accounts.Contains(val))
+                                {
+                                    throw new Exception();
+                                }
+                                else
+                                {
+                                    AccountManager(val);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Account isn't in AccountName instance, try restarting the program");
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -84,6 +120,29 @@ namespace Clidget.Core
             {
                 Directory.CreateDirectory(dat.AccountDirectory);
             }
+        }
+
+        public static void AccountManager(Account account)
+        {
+            Console.WriteLine($"{account.Name}, {account.Balance}, {account.Type.ToString()}");
+        }
+
+        public static Transaction TransactionFactory()
+        {
+            Console.Write("Enter type (Addition, Subtraction) > ");
+            string typein = Console.ReadLine();
+            
+            TransactionType type = Enum.Parse<TransactionType>(typein);
+            
+            Console.Write("Enter an amount > ");
+            int amnt = Convert.ToInt32(Console.ReadLine());
+            
+            Console.Write("Enter a date > ");
+            DateTime date = DateTime.Parse(Console.ReadLine());
+
+            Transaction ret = new Transaction(type, amnt, date);
+
+            return ret;
         }
     }
 }

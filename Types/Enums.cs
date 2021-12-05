@@ -9,6 +9,11 @@
         Investment
     }
 
+    public enum TransactionType
+    {
+        Addition,
+        Subtraction
+    }
     public class Enums
     {
         
