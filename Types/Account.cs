@@ -33,9 +33,9 @@ namespace Clidget.Core.Types
             
             foreach (DirectoryInfo dir in dirinf.GetDirectories())
             {
-                foreach (DirectoryInfo dir2 in dirinf.GetDirectories())
+                foreach (FileInfo file in dir.GetFiles())
                 {
-                    foreach (FileInfo file in dir.GetFiles())
+                    if (!AccountList.Contains(JsonConvert.DeserializeObject<Account>(File.ReadAllText(file.FullName))))
                     {
                         AccountList.Add(JsonConvert.DeserializeObject<Account>(File.ReadAllText(file.FullName)));
                     }
@@ -54,6 +54,18 @@ namespace Clidget.Core.Types
             FileStream fs = File.Create(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"));
             fs.Close();
             File.WriteAllText(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"), toWrite);
-        }      
+        }
+
+        public void EditAccount(string balance, string[]? history)
+        {
+            ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
+            
+            File.Delete(Path.Join(dat.AccountDirectory, this.Name, this.Name + ".json"));
+
+            this.Balance = balance;
+            this.History = history;
+            
+            CreateAccount(this);
+        }
     }
 }

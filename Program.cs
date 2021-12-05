@@ -4,8 +4,9 @@ using System.IO;
 using Clidget.Core.Types;
 using Newtonsoft.Json;
 using Clidget.Core.Types;
+using Clidget.Core.ProgramData;
 
-namespace Clidget.Core.ProgramData
+namespace Clidget.Core
 {
     class RootClass
     {
@@ -53,11 +54,21 @@ namespace Clidget.Core.ProgramData
                     {
                         balance = "0";
                     }
+                    else if(trybal != null)
+                    {
+                        balance = trybal;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to create account, please enter a valid balance!");
+                        continue;
+                    }
                     
                     string[]? history = {"none"};
                     
                     Account accntToCreate = new Account(name, type, balance, history);
                     Account.CreateAccount(accntToCreate);
+                    Accounts.Add(accntToCreate);
                 }
             }
         }
