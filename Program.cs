@@ -167,7 +167,7 @@ namespace Clidget.Core
                         {
                             if (val2.Date.ToString() == val)
                             {
-                                Console.WriteLine($"{val2.Type} {val2.Date.ToString()} {val2.Amount.ToString()} Account Balance: {account.Balance}");
+                                Console.WriteLine($"{val2.Type} {val2.Date.ToString()} {val2.Amount.ToString()} Running balance {val2.RunningBalance}");
                             }
                         }
                     }

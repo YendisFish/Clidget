@@ -7,12 +7,14 @@ namespace Clidget.Core.Types
         public TransactionType Type { get; set; }
         public int Amount { get; set; }
         public DateTime Date { get; set; }
+        public string? RunningBalance { get; set; }
 
-        public Transaction(TransactionType type, int amount, DateTime date)
+        public Transaction(TransactionType type, int amount, DateTime date, string runningBalance = null)
         {
             this.Type = type;
             this.Amount = amount;
             this.Date = date;
+            this.RunningBalance = runningBalance;
         }
     }
 }

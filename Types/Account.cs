@@ -115,13 +115,14 @@ namespace Clidget.Core.Types
             
             if (transaction != null)
             {
+                EditBalance(transaction);
+                transaction.RunningBalance = this.Balance.ToString();
                 string towrite = JsonConvert.SerializeObject(transaction);
                 File.AppendAllText(path, towrite + Environment.NewLine);
             }
             
             this.History = ImportHistory();
             
-            EditBalance(transaction);
         }
     }
 }
