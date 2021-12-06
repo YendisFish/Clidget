@@ -143,10 +143,10 @@ namespace Clidget.Core
                 if (input == "transaction")
                 {
                     Transaction ToEdit = TransactionFactory();
+
+                    account.AddToHistory(ToEdit);
                     
                     account.ImportHistory();
-                    
-                    account.AddToHistory(ToEdit);
                 }
 
                 if (input == "history")

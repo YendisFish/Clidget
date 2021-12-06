@@ -50,7 +50,7 @@ namespace Clidget.Core.Types
             return AccountList;
         }
    
-        public static void CreateAccount(Account account)
+        public static void CreateAccount(Account account, bool dohistory = true)
         {
             ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
 
@@ -59,9 +59,12 @@ namespace Clidget.Core.Types
             FileStream fs = File.Create(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"));
             fs.Close();
             File.WriteAllText(Path.Combine(dat.AccountDirectory, account.Name, $"{account.Name}.json"), toWrite);
-            
-            FileStream fs2= File.Create(Path.Join(dat.AccountDirectory, account.Name, "history.txt"));
-            fs2.Close();
+
+            if (dohistory == true)
+            {
+                FileStream fs2= File.Create(Path.Join(dat.AccountDirectory, account.Name, "history.txt"));
+                fs2.Close();
+            }
         }
 
         public void EditBalance(Transaction transaction)
@@ -75,8 +78,8 @@ namespace Clidget.Core.Types
                 int newbal = Convert.ToInt32(this.Balance) + transaction.Amount;
             
                 this.Balance = newbal.ToString();
-            
-                CreateAccount(this);
+
+                CreateAccount(this, false);
             }
 
             if (transaction.Type == TransactionType.Subtraction)
@@ -85,7 +88,7 @@ namespace Clidget.Core.Types
             
                 this.Balance = newbal.ToString();
             
-                CreateAccount(this);
+                CreateAccount(this, false);
             }
         }
 
@@ -115,8 +118,10 @@ namespace Clidget.Core.Types
                 string towrite = JsonConvert.SerializeObject(transaction);
                 File.AppendAllText(path, towrite + Environment.NewLine);
             }
-
+            
             this.History = ImportHistory();
+            
+            EditBalance(transaction);
         }
     }
 }
