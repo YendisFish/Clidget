@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Clidget.Core.Types;
 using Newtonsoft.Json;
 using Clidget.Core.Types;
@@ -14,11 +15,17 @@ namespace Clidget.Core
         {
             Console.WriteLine("Starting Clidget...");
             StartupChecks();
+            ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
             List<Account> Accounts = Account.ImportAccounts();
+
+            List<string> a = new();
 
             foreach (Account val in Accounts)
             {
                 val.History = val.ImportHistory();
+                
+                string path = Path.Join(dat.AccountDirectory, val.Name, "history.txt");
+                List<string> test = new();
             }
             
             while (true)
@@ -144,9 +151,25 @@ namespace Clidget.Core
 
                 if (input == "history")
                 {
-                    foreach (Transaction transaction in account.History)
+                    List<Transaction> transactionList = account.ImportHistory();
+                    List<string> stringList = new();
+                    
+                    foreach (Transaction val in transactionList)
                     {
-                        Console.WriteLine($"{transaction.Type} {transaction.Amount.ToString()} {transaction.Date}");
+                        stringList.Add(val.Date.ToString());
+                    }
+
+                    List<string> finalStringList = Date.Sort(stringList);
+
+                    foreach (string val in finalStringList)
+                    {
+                        foreach (Transaction val2 in transactionList)
+                        {
+                            if (val2.Date.ToString() == val)
+                            {
+                                Console.WriteLine($"{val2.Type} {val2.Date.ToString()} {val2.Amount.ToString()} Account Balance: {account.Balance}");
+                            }
+                        }
                     }
                 }
             }
