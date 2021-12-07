@@ -167,7 +167,7 @@ namespace Clidget.Core
                         {
                             if (val2.Date.ToString() == val)
                             {
-                                Console.WriteLine($"{val2.Type} {val2.Date.ToString()} {val2.Amount.ToString()} Running balance {val2.RunningBalance}");
+                                Console.WriteLine($"Transaction Message: {val2.Message} Type: {val2.Type} Date: {val2.Date.ToString()} Transaction Amount:{val2.Amount.ToString()} Running balance: {val2.RunningBalance}");
                             }
                         }
                     }
@@ -188,7 +188,10 @@ namespace Clidget.Core
             Console.Write("Enter a date > ");
             DateTime date = DateTime.Parse(Console.ReadLine());
             
-            Transaction ret = new Transaction(type, amnt, date);
+            Console.Write("Enter a transaction message > ");
+            string? message = Console.ReadLine();
+            
+            Transaction ret = new Transaction(type, amnt, date, message);
 
             return ret;
         }
