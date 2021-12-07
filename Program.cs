@@ -16,18 +16,8 @@ namespace Clidget.Core
             Console.WriteLine("Starting Clidget...");
             StartupChecks();
             ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
-            List<Account> Accounts = Account.ImportAccounts();
+            List<Account> Accounts = UpdateAccounts();
 
-            List<string> a = new();
-
-            foreach (Account val in Accounts)
-            {
-                val.History = val.ImportHistory();
-                
-                string path = Path.Join(dat.AccountDirectory, val.Name, "history.txt");
-                List<string> test = new();
-            }
-            
             while (true)
             {
                 Console.Write("Type help for a list of commands > ");
@@ -106,6 +96,7 @@ namespace Clidget.Core
                         if (val.Name == accntSelected)
                         {
                             AccountManager(val);
+                            Accounts = UpdateAccounts();
                         }
                         else
                         {
@@ -119,6 +110,7 @@ namespace Clidget.Core
                                 else
                                 {
                                     AccountManager(val);
+                                    Accounts = UpdateAccounts();
                                 }
                             }
                             catch (Exception ex)
@@ -157,7 +149,7 @@ namespace Clidget.Core
                 Console.Write($"{account.Name} > ");
                 string input = Console.ReadLine();
 
-                if (input == "transaction")
+                if (input.ToLower() == "transaction")
                 {
                     Transaction ToEdit = TransactionFactory();
 
@@ -166,7 +158,7 @@ namespace Clidget.Core
                     account.ImportHistory();
                 }
 
-                if (input == "history")
+                if (input.ToLower() == "history")
                 {
                     List<Transaction> transactionList = account.ImportHistory();
                     List<string> stringList = new();
@@ -184,7 +176,26 @@ namespace Clidget.Core
                         {
                             if (val2.Date.ToString() == val)
                             {
-                                Console.WriteLine($"Transaction Message: {val2.Message} Type: {val2.Type} Date: {val2.Date.ToString()} Transaction Amount:{val2.Amount.ToString()} Running balance: {val2.RunningBalance}");
+                                Console.WriteLine($"Transaction Message: {val2.Message} Type: {val2.Type} Date: {val2.Date.ToString()} Transaction Amount:{val2.Amount.ToString()} Running balance: {val2.RunningBalance} Remaining Budget Balance: {account.Budget}");
+                            }
+                        }
+                    }
+                }
+
+                if (input.ToLower() == "budget")
+                {
+                    if (account.Budget == null)
+                    {
+                        while (true)
+                        {
+                            Console.Write($"{account.Name}/Budgeting > ");
+                            string input2 = Console.ReadLine();
+
+                            if (input2.ToLower() == "add")
+                            {
+                                Budget toset = BudgetFactory();
+
+                                account.Budget = toset;
                             }
                         }
                     }
@@ -209,6 +220,31 @@ namespace Clidget.Core
             string? message = Console.ReadLine();
             
             Transaction ret = new Transaction(type, amnt, date, message);
+
+            return ret;
+        }
+
+        public static Budget BudgetFactory()
+        {
+            Console.Write("What do you want to title this budget > ");
+            string title = Console.ReadLine();
+            
+            Console.Write("What amount do you want to assign to the budget > ");
+            int amount = Convert.ToInt32(Console.ReadLine());
+
+            Budget ret = new Budget(title, amount);
+
+            return ret;
+        }
+
+        public static List<Account> UpdateAccounts()
+        {
+            List<Account> ret = Account.ImportAccounts();
+
+            foreach (Account val in ret)
+            {
+                val.ImportHistory();
+            }
 
             return ret;
         }
