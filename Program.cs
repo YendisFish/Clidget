@@ -73,10 +73,27 @@ namespace Clidget.Core
                         Console.WriteLine("Failed to create account, please enter a valid balance!");
                         continue;
                     }
+                    
+                    Console.Write("Would you like to create a budget for this account [yes/no] > ");
+                    string yorn = Console.ReadLine();
 
-                    Account accntToCreate = new Account(name, type, balance);
-                    Account.CreateAccount(accntToCreate);
-                    Accounts.Add(accntToCreate);
+                    if (yorn.ToLower() == "yes")
+                    {
+                        Console.Write("What do you want the amount to be > ");
+                        int amnt = Convert.ToInt32(Console.ReadLine());
+                        
+                        Account accntToCreate = new Account(name, type, balance);
+                        accntToCreate.Budget = new Budget(accntToCreate.Name, amnt);
+                        Account.CreateAccount(accntToCreate);
+                        Accounts.Add(accntToCreate);
+                    }
+
+                    if (yorn.ToLower() == "no")
+                    {
+                        Account accntToCreate = new Account(name, type, balance);
+                        Account.CreateAccount(accntToCreate);
+                        Accounts.Add(accntToCreate);
+                    }
                 }
 
                 if (UserData == "select")

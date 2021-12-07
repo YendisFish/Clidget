@@ -12,6 +12,7 @@ namespace Clidget.Core.Types
         public AccountType Type { get; set; }
         public string Balance { get; set; }
         public List<Transaction>? History { get; set; }
+        public Budget? Budget { get; set; }
 
         public Account(string name, AccountType type, string balance)
         {
@@ -123,6 +124,18 @@ namespace Clidget.Core.Types
             
             this.History = ImportHistory();
             
+        }
+
+        public void AddBudget(Budget budget)
+        {
+            this.Budget = budget;
+            CreateAccount(this, false);
+        }
+
+        public void RemoveBudget()
+        {
+            this.Budget = null;
+            CreateAccount(this, false);
         }
     }
 }
