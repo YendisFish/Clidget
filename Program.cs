@@ -176,7 +176,7 @@ namespace Clidget.Core
                         {
                             if (val2.Date.ToString() == val)
                             {
-                                Console.WriteLine($"Transaction Message: {val2.Message} Type: {val2.Type} Date: {val2.Date.ToString()} Transaction Amount:{val2.Amount.ToString()} Running balance: {val2.RunningBalance} Remaining Budget Balance: {account.Budget}");
+                                Console.WriteLine($"Transaction Message: {val2.Message} Type: {val2.Type} Date: {val2.Date.ToString()} Transaction Amount: {val2.Amount.ToString()} Running balance: {val2.RunningBalance} Remaining Budget Balance: {account.Budget.Amount.ToString()}");
                             }
                         }
                     }
@@ -195,7 +195,7 @@ namespace Clidget.Core
                             {
                                 Budget toset = BudgetFactory();
 
-                                account.Budget = toset;
+                                account.Budget = toset;   
                             }
                         }
                     }

@@ -3,7 +3,7 @@
     public class Budget
     {
         public string Title { get; set; }
-        public int Amount { get; set; }
+        public long Amount { get; set; }
 
         public Budget(string title, int amount)
         {

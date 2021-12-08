@@ -76,7 +76,7 @@ namespace Clidget.Core.Types
 
             if (transaction.Type == TransactionType.Addition)
             {
-                int newbal = Convert.ToInt32(this.Balance) + transaction.Amount;
+                long newbal = Convert.ToInt64(this.Balance) + transaction.Amount;
             
                 this.Balance = newbal.ToString();
 
@@ -85,7 +85,7 @@ namespace Clidget.Core.Types
 
             if (transaction.Type == TransactionType.Subtraction)
             {
-                int newbal = Convert.ToInt32(this.Balance) - transaction.Amount;
+                long newbal = Convert.ToInt64(this.Balance) - transaction.Amount;
             
                 this.Balance = newbal.ToString();
             
