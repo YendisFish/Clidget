@@ -14,7 +14,7 @@ namespace Clidget.Core.Types
         public List<Transaction>? History { get; set; }
         public Budget? Budget { get; set; }
 
-        public Account(string name, AccountType type, string balance)
+        public Account(string name, AccountType type, string balance, Budget budget = null)
         {
             ProgramDataType dat = JsonConvert.DeserializeObject<ProgramDataType>(File.ReadAllText("./AppSettings.json"));
             
@@ -22,6 +22,7 @@ namespace Clidget.Core.Types
             this.Type = type;
             this.Balance = balance;
             this.History = new List<Transaction>();
+            this.Budget = budget;
         }
 
         public static List<Account> ImportAccounts()
@@ -77,6 +78,11 @@ namespace Clidget.Core.Types
             if (transaction.Type == TransactionType.Addition)
             {
                 long newbal = Convert.ToInt64(this.Balance) + transaction.Amount;
+
+                if (this.Budget != null)
+                {
+                    this.Budget.Amount = this.Budget.Amount - transaction.Amount;
+                }
             
                 this.Balance = newbal.ToString();
 
@@ -89,6 +95,11 @@ namespace Clidget.Core.Types
             
                 this.Balance = newbal.ToString();
             
+                if (this.Budget != null)
+                {
+                    this.Budget.Amount = this.Budget.Amount + transaction.Amount;
+                }
+                
                 CreateAccount(this, false);
             }
         }

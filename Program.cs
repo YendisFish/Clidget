@@ -151,7 +151,7 @@ namespace Clidget.Core
 
                 if (input.ToLower() == "transaction")
                 {
-                    Transaction ToEdit = TransactionFactory();
+                    Transaction ToEdit = TransactionFactory(account);
 
                     account.AddToHistory(ToEdit);
                     
@@ -176,7 +176,7 @@ namespace Clidget.Core
                         {
                             if (val2.Date.ToString() == val)
                             {
-                                Console.WriteLine($"Transaction Message: {val2.Message} Type: {val2.Type} Date: {val2.Date.ToString()} Transaction Amount: {val2.Amount.ToString()} Running balance: {val2.RunningBalance} Remaining Budget Balance: {account.Budget.Amount.ToString()}");
+                                Console.WriteLine($"Transaction Message: {val2.Message} | Type: {val2.Type} | Date: {val2.Date.ToString()} | Transaction Amount: {val2.Amount.ToString()} | Running balance: {val2.RunningBalance} | Remaining Budget Balance: {val2.Budget.Amount}");
                             }
                         }
                     }
@@ -195,7 +195,8 @@ namespace Clidget.Core
                             {
                                 Budget toset = BudgetFactory();
 
-                                account.Budget = toset;   
+                                account.Budget = toset;
+                                account.AddBudget(toset);
                             }
                         }
                     }
@@ -203,7 +204,7 @@ namespace Clidget.Core
             }
         }
 
-        public static Transaction TransactionFactory()
+        public static Transaction TransactionFactory(Account forBudget)
         {
             Console.Write("Enter type (Addition, Subtraction) > ");
             string typein = Console.ReadLine();
@@ -218,10 +219,17 @@ namespace Clidget.Core
             
             Console.Write("Enter a transaction message > ");
             string? message = Console.ReadLine();
-            
-            Transaction ret = new Transaction(type, amnt, date, message);
 
-            return ret;
+            if (forBudget.Budget != null)
+            {
+                Transaction ret = new Transaction(type, amnt, date, message, null, forBudget.Budget);
+                return ret;
+            }
+            else
+            {
+                Transaction ret = new Transaction(type, amnt, date, message);
+                return ret;
+            }
         }
 
         public static Budget BudgetFactory()

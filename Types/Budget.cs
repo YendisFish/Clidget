@@ -5,7 +5,7 @@
         public string Title { get; set; }
         public long Amount { get; set; }
 
-        public Budget(string title, int amount)
+        public Budget(string title, long amount)
         {
             this.Title = title;
             this.Amount = amount;
