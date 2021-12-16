@@ -25,7 +25,12 @@ namespace Clidget.Core
 
                 if (UserData == "help")
                 {
-                    Console.WriteLine("list - Returns a list of accounts");
+                    string[] commandList = new string[] {"list - Returns list of accounts", "create - Lets you create an account", "select - Lets you select an account"};
+
+                    foreach(string val in commandList)
+                    {
+                        Console.WriteLine(val);
+                    }
                 }
 
                 if (UserData == "list")
@@ -186,7 +191,9 @@ namespace Clidget.Core
                 {
                     if (account.Budget == null)
                     {
-                        while (true)
+                        bool notonexit = true;
+
+                        while (notonexit)
                         {
                             Console.Write($"{account.Name}/Budgeting > ");
                             string input2 = Console.ReadLine();
@@ -198,8 +205,18 @@ namespace Clidget.Core
                                 account.Budget = toset;
                                 account.AddBudget(toset);
                             }
+
+                            if(input2.ToLower() == "exit")
+                            {
+                                notonexit = false;
+                            }
                         }
                     }
+                }
+
+                if(input.ToLower() == "exit")
+                {
+                    selected = false;
                 }
             }
         }
