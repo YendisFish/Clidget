@@ -14,8 +14,4 @@
         Addition,
         Subtraction
     }
-    public class Enums
-    {
-        
-    }
 }
