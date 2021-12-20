@@ -25,7 +25,7 @@ namespace Clidget.Core
 
                 if (UserData == "help")
                 {
-                    string[] commandList = new string[] {"list - Returns list of accounts", "create - Lets you create an account", "select - Lets you select an account"};
+                    string[] commandList = new string[] {"list - Returns list of accounts", "create - Lets you create an account", "select - Lets you select an account", "exit - Exits program"};
 
                     foreach(string val in commandList)
                     {
@@ -33,7 +33,12 @@ namespace Clidget.Core
                     }
                 }
 
-                if (UserData == "list")
+                if(UserData.ToLower() == "exit")
+                {
+                    break;
+                }
+
+                if (UserData.ToLower() == "list")
                 {
                     foreach (Account acc in Accounts)
                     {
@@ -41,7 +46,7 @@ namespace Clidget.Core
                     }
                 }
 
-                if (UserData == "create")
+                if (UserData.ToLower() == "create")
                 {
                     Console.Write("Name > ");
                     string name = Console.ReadLine();
@@ -91,7 +96,7 @@ namespace Clidget.Core
                     }
                 }
 
-                if (UserData == "select")
+                if (UserData.ToLower() == "select")
                 {
                     Console.Write("Enter the name of the account you want to select > ");
                     string accntSelected = Console.ReadLine();
@@ -126,6 +131,8 @@ namespace Clidget.Core
                     }
                 }
             }
+
+            Console.WriteLine("Exiting Clidget...");
         }
 
         public static void StartupChecks()
@@ -153,6 +160,16 @@ namespace Clidget.Core
             {
                 Console.Write($"{account.Name} > ");
                 string input = Console.ReadLine();
+
+                if(input.ToLower() == "help")
+                {
+                    string[] helpList = new string[] { "transaction - Create a transaction for an account", "history - See account history", "budget - Opens budget manager for account", "exit - Exits account manager"};
+                    
+                    foreach(string help in helpList)
+                    {
+                        Console.WriteLine(help);
+                    }
+                }
 
                 if (input.ToLower() == "transaction")
                 {
@@ -198,6 +215,16 @@ namespace Clidget.Core
                             Console.Write($"{account.Name}/Budgeting > ");
                             string input2 = Console.ReadLine();
 
+                            if (input.ToLower() == "help")
+                            {
+                                string[] helpList = new string[] { "add - Adds a budget to the selected account", "exit - Exits budget manager" };
+
+                                foreach (string help in helpList)
+                                {
+                                    Console.WriteLine(help);
+                                }
+                            }
+
                             if (input2.ToLower() == "add")
                             {
                                 Budget toset = BudgetFactory();
@@ -209,6 +236,7 @@ namespace Clidget.Core
                             if(input2.ToLower() == "exit")
                             {
                                 notonexit = false;
+                                break;
                             }
                         }
                     }
@@ -217,6 +245,7 @@ namespace Clidget.Core
                 if(input.ToLower() == "exit")
                 {
                     selected = false;
+                    break;
                 }
             }
         }
